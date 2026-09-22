@@ -19,20 +19,17 @@ export default function TabLayout() {
         },
 
         headerTintColor: "#778472",
+
+        headerLeft: () => (
+          <Pressable onPress={() => router.replace("/")}>
+            <Text style={styles.title}>MY ANKI</Text>
+          </Pressable>
+        ),
+
+        headerTitle: "",
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "",
-
-          headerLeft: () => (
-            <Pressable onPress={() => router.push("/")}>
-              <Text style={styles.title}>MY ANKI</Text>
-            </Pressable>
-          ),
-        }}
-      />
+      <Tabs.Screen name="index" />
     </Tabs>
   );
 }
