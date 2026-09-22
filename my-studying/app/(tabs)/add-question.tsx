@@ -1,33 +1,46 @@
 import React, { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { supabase } from "@/lib/supabase";
 
 function AddQuestion() {
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
+  const [isError, setIsError] = useState<boolean>(false);
 
   const handleCreate = async () => {
-    if (!question.trim() || !answer.trim()) {
-      Alert.alert("Question and Answer are required.");
+    const emptyField = [
+      { label: "Question", value: question },
+      { label: "Answer", value: answer },
+      { label: "Description", value: description },
+    ].find((field) => !field.value.trim());
+
+    if (emptyField) {
+      setMessage(`${emptyField.label} is empty.`);
+      setIsError(true);
       return;
     }
+
+    setMessage("");
 
     const { error } = await supabase.from("questions").insert({
       question: question.trim(),
       answer: answer.trim(),
-      description: description.trim() || null,
+      description: description.trim(),
     });
 
     if (error) {
-      Alert.alert("Could not create question", error.message);
+      setMessage(`Could not create question: ${error.message}`);
+      setIsError(true);
       return;
     }
 
     setQuestion("");
     setAnswer("");
     setDescription("");
-    Alert.alert("Question created");
+    setMessage("Question created");
+    setIsError(false);
   };
 
   return (
@@ -40,7 +53,6 @@ function AddQuestion() {
         onChangeText={setQuestion}
         placeholder="Enter question..."
         placeholderTextColor="#999"
-        
       />
 
       {/* Answer */}
@@ -64,10 +76,24 @@ function AddQuestion() {
         multiline
       />
 
+      {message ? (
+        <Text
+          style={[
+            styles.message,
+            isError ? styles.errorMessage : styles.successMessage,
+          ]}
+        >
+          {message}
+        </Text>
+      ) : null}
+
       <Pressable
         accessibilityRole="button"
         onPress={handleCreate}
-        style={({ pressed }) => [styles.createButton, pressed && styles.createButtonPressed]}
+        style={({ pressed }) => [
+          styles.createButton,
+          pressed && styles.createButtonPressed,
+        ]}
       >
         <Text style={styles.createButtonText}>Create</Text>
       </Pressable>
@@ -99,6 +125,16 @@ const styles = StyleSheet.create({
   textArea: {
     height: 100,
     textAlignVertical: "top", // Androidで上寄せ
+  },
+  message: {
+    fontSize: 16,
+    marginBottom: 12,
+  },
+  errorMessage: {
+    color: "#D32F2F",
+  },
+  successMessage: {
+    color: "#2E7D32",
   },
   createButton: {
     alignItems: "center",
