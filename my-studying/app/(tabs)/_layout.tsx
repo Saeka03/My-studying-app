@@ -24,6 +24,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerRight: () => (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.push("/practice")}
+              style={({ pressed }) => [styles.practiceButton, pressed && styles.practiceButtonPressed]}
+            >
+              <Text style={styles.practiceButtonText}>Practice</Text>
+            </Pressable>
+          ),
           title: "My Questions",
         }}
       />
@@ -41,6 +50,22 @@ export default function TabLayout() {
           ),
           href: null,
           title: "Add Question",
+        }}
+      />
+      <Tabs.Screen
+        name="practice"
+        options={{
+          headerLeft: () => (
+            <Pressable
+              accessibilityRole="button"
+              onPress={() => router.replace("/")}
+              style={({ pressed }) => [styles.backButton, pressed && styles.backButtonPressed]}
+            >
+              <Text style={styles.backButtonText}>‹ Back</Text>
+            </Pressable>
+          ),
+          href: null,
+          title: "Practice",
         }}
       />
     </Tabs>
@@ -66,5 +91,22 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  practiceButton: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FFFFFF",
+    borderRadius: 14,
+    borderWidth: 1,
+    marginRight: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  practiceButtonPressed: {
+    opacity: 0.65,
+  },
+  practiceButtonText: {
+    color: "#2E5931",
+    fontSize: 13,
+    fontWeight: "700",
   },
 });
