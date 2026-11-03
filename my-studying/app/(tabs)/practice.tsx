@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Animated,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -24,6 +25,7 @@ export default function Practice() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAnswerVisible, setIsAnswerVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [answerHeight, setAnswerHeight] = useState(0);
   const currentQuestionIdRef = useRef<string | null>(null);
   const answerAnimation = useRef(new Animated.Value(0)).current;
 
@@ -116,7 +118,10 @@ export default function Practice() {
           <Text style={styles.emptyDescription}>Add a question to start practicing.</Text>
         </View>
       ) : (
-        <View style={styles.content}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           <Text style={styles.eyebrow}>QUESTION</Text>
           <View style={styles.questionCard}>
             <Text style={styles.questionText}>{currentQuestion.question}</Text>
@@ -136,9 +141,9 @@ export default function Practice() {
             style={[
               styles.answerWrapper,
               {
-                maxHeight: answerAnimation.interpolate({
+                height: answerAnimation.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [0, 600],
+                  outputRange: [0, answerHeight],
                 }),
                 opacity: answerAnimation,
                 transform: [
@@ -152,7 +157,10 @@ export default function Practice() {
               },
             ]}
           >
-            <View style={styles.answerCard}>
+            <View
+              onLayout={(event) => setAnswerHeight(event.nativeEvent.layout.height)}
+              style={styles.answerCard}
+            >
               <Text style={styles.answerLabel}>ANSWER</Text>
               <Text style={styles.answerText}>{currentQuestion.answer}</Text>
               <Text style={styles.answerLabel}>DESCRIPTION</Text>
@@ -167,7 +175,7 @@ export default function Practice() {
           >
             <Text style={styles.nextButtonText}>Next</Text>
           </Pressable>
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -184,8 +192,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 30,
   },
-  content: {
-    flex: 1,
+  scrollContent: {
+    flexGrow: 1,
     padding: 24,
   },
   eyebrow: {

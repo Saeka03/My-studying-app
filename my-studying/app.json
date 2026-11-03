@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "my-studying",
+    "name": "My Study",
     "slug": "my-studying",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,7 +23,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/my-study-favicon.png"
     },
     "plugins": [
       "expo-router",
